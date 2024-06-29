@@ -10,33 +10,38 @@ import zlib
 from datetime import datetime
 from fnmatch import fnmatch
 from math import ceil
+from commands import vip_init
+from repository import *
+from utils import *
 
-argparser = argparse.ArgumentParser(description="A minimal implementation of Git")
+arg_parser = argparse.ArgumentParser(description="A minimal implementation of Git")
 
-argsubparsers = argparser.add_subparsers(title="Commands", dest="command")
-argsubparsers.required = True
+arg_sub_parsers = arg_parser.add_subparsers(title="Commands", dest="command")
+arg_sub_parsers.required = True
+init_sub_parser = arg_sub_parsers.add_parser("init", help="For initializing new git repositories.")
+init_sub_parser.add_argument("path",
+                             metavar="directory",
+                             nargs="?",
+                             default=".",
+                             help="The file path to create the repository at.")
 
 
-
-
-
-
-def main(argv=sys.argv[1]):
-    args = argparser.parse_args(argv)
+def main(argv=sys.argv[1:]):
+    args = arg_parser.parse_args(argv)
     match args.command:
-        case "add"          : cmd_add(args)
-        case "cat-file"     : cmd_cat_file(args)
-        case "check-ignore" : cmd_check_ignore(args)
-        case "checkout"     : cmd_checkout(args)
-        case "commit"       : cmd_commit(args)
-        case "hash-object"  : cmd_hash_object(args)
-        case "init"         : cmd_init(args)
-        case "log"          : cmd_log(args)
-        case "ls-files"     : cmd_ls_files(args)
-        case "ls-tree"      : cmd_ls_tree(args)
-        case "rev-parse"    : cmd_rev_parse(args)
-        case "rm"           : cmd_rm(args)
-        case "show-ref"     : cmd_show_ref(args)
-        case "status"       : cmd_status(args)
-        case "tag"          : cmd_tag(args)
+        case "add"          : vip_add(args)
+        case "cat-file"     : vip_cat_file(args)
+        case "check-ignore" : vip_check_ignore(args)
+        case "checkout"     : vip_checkout(args)
+        case "commit"       : vip_commit(args)
+        case "hash-object"  : vip_hash_object(args)
+        case "init"         : vip_init(args)
+        case "log"          : vip_log(args)
+        case "ls-files"     : vip_ls_files(args)
+        case "ls-tree"      : vip_ls_tree(args)
+        case "rev-parse"    : vip_rev_parse(args)
+        case "rm"           : vip_rm(args)
+        case "show-ref"     : vip_show_ref(args)
+        case "status"       : vip_status(args)
+        case "tag"          : vip_tag(args)
         case _              : print("Bad command.")
