@@ -1,4 +1,4 @@
-from os.path import join, isdir, exists
+from os.path import join, isdir, exists, realpath
 from os import listdir, makedirs
 from configparser import ConfigParser
 from utils import repository_file, repository_directory
@@ -64,6 +64,22 @@ def create_repository(path):
         git_config.write(repo_file)
 
     return repository
+
+def repository_find(path=".", required=True):
+
+    path = realpath(path)
+
+    if isdir(join(path, ".git")):
+        return Repository(path)
+    
+    parent = realpath(join(path, "."))
+
+    if parent == path:
+        if required:
+            raise Exception("Unable to find git directory.")
+    else:
+        return None
+    return repository_find(parent, required)
 
 def default_config():
     config = ConfigParser()
