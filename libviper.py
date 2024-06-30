@@ -14,7 +14,7 @@ from commands import vip_init
 from repository import *
 from utils import *
 
-arg_parser = argparse.ArgumentParser(description="A minimal implementation of Git")
+arg_parser = argparse.ArgumentParser(description="A minimal implementation of Git.")
 
 arg_sub_parsers = arg_parser.add_subparsers(title="Commands", dest="command")
 arg_sub_parsers.required = True
@@ -25,6 +25,16 @@ init_sub_parser.add_argument("path",
                              default=".",
                              help="The file path to create the repository at.")
 
+cat_file_sub_parser = arg_sub_parsers.add_parser("cat-file",
+                                                 help="Read the contents of repository objects.")
+cat_file_sub_parser.add_argument("type",
+                                 metavar="type",
+                                 choices=["blob", "commit", "tag", "tree"],
+                                 help="Specify object type.")
+
+cat_file_sub_parser.add_argument("object", 
+                                 metavar="object",
+                                 help="The object to be displayed.")
 
 def main(argv=sys.argv[1:]):
     args = arg_parser.parse_args(argv)

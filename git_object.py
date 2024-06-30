@@ -3,7 +3,7 @@ from os.path import isfile, exists
 from zlib import decompress, compress
 from hashlib import sha1
 
-class GitOjbect(object): 
+class GitObject(object): 
   def __init__(self, data=None):
     if data != None:
       self.deserialize(data)
@@ -67,3 +67,6 @@ def write_object(git_object, repository=None):
         git_object.write(compress(result))
 
   return sha_hash
+
+def find_object(repository, repository_name, fmt=None, follow=True):
+  return repository_name
