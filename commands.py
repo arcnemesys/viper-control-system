@@ -12,3 +12,13 @@ def cat_file(repository, repository_object, fmt=None):
     repository_object = read_object(repository, 
                                     object_find(repository, repository_object, fmt=fmt))
     sys.stdout.buffer.write(repository_object.serialize())
+
+def vip_hash_object(args):
+    if args.write:
+        repository = repository_find()
+    else:
+        repository = None
+    
+    with open(args.path, "rb") as git_object:
+        sha_hash = hash_object(git_object, args.type.encode(), repository)
+        print(sha_hash)

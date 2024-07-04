@@ -70,3 +70,16 @@ def write_object(git_object, repository=None):
 
 def find_object(repository, repository_name, fmt=None, follow=True):
   return repository_name
+
+def hash_object(git_object, fmt, repository=None):
+  """Hash a specified object, and write it to a repository if repository is not None"""
+  git_object_data = git_object.read()
+
+  match fmt:
+    case b'commit' : object_type=GitCommit(data)
+    case b'tree'   : object_type=GitTree(data)
+    case b'tag'    : object_type=GitTag(data)
+    case b'blob'   : object_type=GitBlob(data)
+    case _: raise Exception("Unknown type %s!" % fmt)
+
+  return write_object(object_type, repository)

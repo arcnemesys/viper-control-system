@@ -36,6 +36,26 @@ cat_file_sub_parser.add_argument("object",
                                  metavar="object",
                                  help="The object to be displayed.")
 
+hash_object_sub_parser = arg_sub_parsers.add_parser("hash-object",
+                                   help="Produce an ID from an object and/or create blob from file.")
+
+hash_object_sub_parser.add_argument("-t",
+                                    metavar="type",
+                                    dest="type",
+                                    choices=["blob", "commit", "tag", "tree"],
+                                    default="blob",
+                                    help="Specify the object type"
+                                    )
+
+hash_object_sub_parser.add_argument("-w",
+                                    dest="write",
+                                    action="store_true",
+                                    help="Write the specified object into the store."
+                                    )
+
+hash_object_sub_parser.add_argument("path",
+                                    help="Read object from specified <path>"
+                                    )
 def main(argv=sys.argv[1:]):
     args = arg_parser.parse_args(argv)
     match args.command:
