@@ -21,7 +21,7 @@ def repository_directory(repository, *path, mkdir=False):
             return path
         else:
             raise Exception("%s is not a directory." % path)
-    
+
     if mkdir:
         makedirs(path)
         return path
@@ -31,7 +31,7 @@ def repository_directory(repository, *path, mkdir=False):
 def parse_commit(raw, start=0, kv_map=None):
     if not kv_map:
         kv_map = OrderedDict()
-    
+
     space = raw.find(b' ', start)
     newline = raw.find(b'\n', start)
 
@@ -40,7 +40,7 @@ def parse_commit(raw, start=0, kv_map=None):
 
         kv_map[None] = raw[start+1:]
         return kv_map
-    
+
     key = raw[start:space]
 
     end = start
@@ -59,5 +59,23 @@ def parse_commit(raw, start=0, kv_map=None):
             kv_map[key] = [ kv_map[key], value]
     else:
         kv_map[key] = value
-    
+
     return parse_commit(raw, start=end+1, kv_map=kv_map)
+
+def serialize_commit(kv_map):
+    return_value = b''
+
+    for key in kv_map.keys():
+        if key == None: continue
+
+        value = kv_map[key]
+
+        if type(value) != list:
+            value = [ value ]
+
+        for element in value:
+            return_value += key + b' ' + (value.replace(b'\n', b'\n ')) + b'\n'
+
+    return_value += b'\n' + kv_map[None] + b'\n'
+
+    return return_value
