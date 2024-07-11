@@ -6,7 +6,7 @@ import hashlib
 import os
 import re
 import sys
-import zlib 
+import zlib
 from datetime import datetime
 from fnmatch import fnmatch
 from math import ceil
@@ -32,9 +32,17 @@ cat_file_sub_parser.add_argument("type",
                                  choices=["blob", "commit", "tag", "tree"],
                                  help="Specify object type.")
 
-cat_file_sub_parser.add_argument("object", 
+cat_file_sub_parser.add_argument("object",
                                  metavar="object",
                                  help="The object to be displayed.")
+
+log_sub_parser = arg_sub_parsers.add_parser("log", help="Display the history of a specified commit")
+log_sub_parser.add_argument("commit",
+    default="HEAD",
+    nargs="?",
+    help="The commit whose history you want to view"
+
+)
 
 def main(argv=sys.argv[1:]):
     args = arg_parser.parse_args(argv)

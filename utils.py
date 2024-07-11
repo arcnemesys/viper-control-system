@@ -1,6 +1,8 @@
 from os.path import join, exists, isdir
 from os import makedirs
 from collections import OrderedDict
+
+from git_object import read_object
 def repository_path(repository, *path):
     """Generate path for the repository git directory."""
     return join(repository.git_dir, *path)
@@ -79,3 +81,35 @@ def serialize_commit(kv_map):
     return_value += b'\n' + kv_map[None] + b'\n'
 
     return return_value
+
+def log_graphviz(repo, sha, seen):
+
+    if sha in seen:
+        return
+    seen.add(sha)
+
+    commit = read_object(repo, sha)
+    short_hash = sha[0:8]
+    message = commit.kvlm[None].decode("utf8").strip()
+    message = message.replace("\\", "\\\\")
+    message = message.replace("\"", "\\\"")
+
+    if "\n" in message: # Keep only the first line
+        message = message[:message.index("\n")]
+
+    print("  c_{0} [label=\"{1}: {2}\"]".format(sha, sha[0:7], message))
+    assert commit.fmt==b'commit'
+
+    if not b'parent' in commit.kvlm.keys():
+        # Base case: the initial commit.
+        return
+
+    parents = commit.kvlm[b'parent']
+
+    if type(parents) != list:
+        parents = [ parents ]
+
+    for p in parents:
+        p = p.decode("ascii")
+        print ("  c_{0} -> c_{1};".format(sha, p))
+        log_graphviz(repo, p, seen)
